@@ -1,0 +1,68 @@
+{
+  "name": "dark-project-studio",
+  "productName": "Dark Project Studio",
+  "private": true,
+  "version": "2.0.0",
+  "main": "electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "electron:start": "electron .",
+    "build:exe": "npm run build && electron-builder --win nsis portable",
+    "build:desktop": "npm run build && electron-builder"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.475.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@types/w3c-web-hid": "^1.0.6",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0"
+  },
+  "build": {
+    "appId": "eu.darkproject.studio",
+    "productName": "Dark Project Studio",
+    "copyright": "Copyright © 2026 Dark Project",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "public/icon.png",
+      "artifactName": "${productName}_v${version}_Installer.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Dark Project Studio"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.utilities"
+    }
+  }
+}

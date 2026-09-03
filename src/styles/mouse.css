@@ -1,0 +1,146 @@
+/* Mouse Visualizer and Sensor Studio Styling */
+
+.mouse-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: radial-gradient(circle at center, rgba(22, 29, 44, 0.8) 0%, rgba(8, 10, 15, 0.98) 100%);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.mouse-svg-wrapper {
+  position: relative;
+  width: 320px;
+  height: 440px;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.7));
+  transition: transform 0.3s ease;
+}
+
+.mouse-body {
+  fill: #161c28;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 2;
+  transition: all 0.2s ease;
+}
+
+.mouse-btn {
+  cursor: pointer;
+  fill: #222b3d;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 1.5;
+  transition: all 0.2s ease;
+}
+
+.mouse-btn:hover {
+  fill: #323e57;
+  stroke: var(--accent-cyan);
+  filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
+}
+
+.mouse-btn.active, .mouse-btn.selected {
+  fill: rgba(0, 240, 255, 0.25);
+  stroke: var(--accent-cyan);
+  filter: drop-shadow(0 0 12px var(--accent-cyan-glow));
+}
+
+.mouse-wheel {
+  fill: #0c0f16;
+  stroke: #334155;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mouse-wheel:hover {
+  stroke: var(--accent-cyan);
+}
+
+/* DPI Stages bar */
+.dpi-stages-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.dpi-stage-card {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dpi-stage-card:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-medium);
+}
+
+.dpi-stage-card.active {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 16px var(--accent-cyan-glow);
+}
+
+.dpi-stage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.dpi-color-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.dpi-value {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Sensor Specs HUD Grid */
+.sensor-hud-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.sensor-hud-card {
+  padding: 16px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sensor-hud-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.sensor-hud-value {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+}

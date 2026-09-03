@@ -1,0 +1,195 @@
+/* Realistic 1:1 Interactive Keyboard Visualizer Styling */
+
+.keyboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 24px;
+  background: radial-gradient(circle at 50% 30%, rgba(26, 34, 50, 0.9) 0%, rgba(8, 10, 15, 0.98) 100%);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-medium);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.75), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 40px rgba(0, 240, 255, 0.08);
+  perspective: 1000px;
+}
+
+/* Keyboard Chassis / Bezel */
+.keyboard-chassis {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  background: linear-gradient(180deg, #1f2738 0%, #111622 100%);
+  border-radius: 16px;
+  border: 2px solid #2a354b;
+  box-shadow: 
+    0 16px 40px rgba(0, 0, 0, 0.9),
+    inset 0 3px 6px rgba(255, 255, 255, 0.1),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.8);
+  max-width: 100%;
+  position: relative;
+}
+
+/* Aluminum Plate Accent */
+.keyboard-plate {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  background: #090c12;
+  border-radius: 10px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.keyboard-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/* 1:1 Double-Shot PBT Keycap */
+.keycap {
+  position: relative;
+  height: 48px;
+  min-width: 44px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #283348 0%, #1a2232 85%, #131924 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.06s cubic-bezier(0.1, 0.9, 0.2, 1), box-shadow 0.08s ease, background 0.15s ease;
+  box-shadow: 
+    0 5px 0 #0d121c,
+    0 8px 12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.22),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.6);
+  transform-style: preserve-3d;
+}
+
+.keycap:hover {
+  background: linear-gradient(180deg, #354460 0%, #232d42 85%, #18202e 100%);
+  border-color: rgba(0, 240, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 7px 0 #0d121c,
+    0 12px 20px rgba(0, 240, 255, 0.25),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Tactile Physical Press Animation */
+.keycap:active, .keycap.pressed {
+  transform: translateY(4px) !important;
+  background: linear-gradient(180deg, #131924 0%, #1e2636 100%) !important;
+  box-shadow: 
+    0 1px 0 #0d121c,
+    0 2px 6px rgba(0, 0, 0, 0.7),
+    inset 0 2px 5px rgba(0, 0, 0, 0.8),
+    0 0 20px var(--accent-cyan-glow) !important;
+}
+
+.keycap.selected {
+  border-color: var(--accent-cyan);
+  box-shadow: 
+    0 5px 0 #0d121c,
+    0 0 20px var(--accent-cyan-glow), 
+    inset 0 0 10px rgba(0, 240, 255, 0.4);
+}
+
+/* Ripple wave outward ring */
+@keyframes key-ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.8);
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+    box-shadow: 0 0 24px 18px rgba(0, 240, 255, 0);
+  }
+}
+
+.keycap.pressed::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 10px;
+  border: 2px solid var(--accent-cyan);
+  animation: key-ripple 0.45s ease-out forwards;
+  pointer-events: none;
+}
+
+/* RGB Glow Underneath Switch */
+.keycap-rgb-glow {
+  position: absolute;
+  inset: -3px;
+  border-radius: 8px;
+  opacity: 0.55;
+  filter: blur(6px);
+  z-index: -1;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.keycap-label {
+  font-family: var(--font-main);
+  line-height: 1;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.keycap-sublabel {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.keycap-he-indicator {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  font-size: 8px;
+  font-family: var(--font-mono);
+  color: var(--accent-pink);
+  font-weight: 800;
+  background: rgba(236, 72, 153, 0.15);
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+
+/* Model-Specific Themes */
+.theme-fuji .keycap {
+  background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 85%, #94a3b8 100%);
+  color: #0f172a;
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 5px 0 #64748b, 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.theme-fuji .keycap.is-modifier {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 85%, #0369a1 100%);
+  color: #fff;
+  box-shadow: 0 5px 0 #075985;
+}
+
+.theme-violet .keycap.is-modifier {
+  background: linear-gradient(180deg, #a855f7 0%, #7e22ce 85%, #581c87 100%);
+  color: #fff;
+  box-shadow: 0 5px 0 #3b0764;
+}
+
+.theme-bushido .keycap.is-modifier {
+  background: linear-gradient(180deg, #ef4444 0%, #b91c1c 85%, #7f1d1d 100%);
+  color: #fff;
+  box-shadow: 0 5px 0 #450a0a;
+}
