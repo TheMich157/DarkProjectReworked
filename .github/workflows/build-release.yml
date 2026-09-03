@@ -13,10 +13,15 @@ on:
       - master
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-windows-exe:
     name: Build Standalone Windows .exe
     runs-on: windows-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repository
