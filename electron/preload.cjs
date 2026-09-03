@@ -1,6 +1,6 @@
-const { contextBridge } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
-// Expose a minimal bridge for the renderer to detect it's running inside Electron
+// Expose minimal bridge for renderer context
 contextBridge.exposeInMainWorld('darkProjectBridge', {
   platform: process.platform,
   isElectron: true,
@@ -8,5 +8,12 @@ contextBridge.exposeInMainWorld('darkProjectBridge', {
     node: process.versions.node,
     chrome: process.versions.chrome,
     electron: process.versions.electron
+  },
+  checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
+  restartAndInstall: () => ipcRenderer.invoke('restart-and-install-update'),
+  onUpdaterStatus: (callback) => {
+    const handler = (event, data) => callback(data);
+    ipcRenderer.on('updater-status', handler);
+    return () => ipcRenderer.removeListener('updater-status', handler);
   }
 });
