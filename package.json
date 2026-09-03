@@ -56,14 +56,18 @@
         "portable"
       ],
       "icon": "public/icon.png",
-      "artifactName": "${productName}_v${version}_Installer.${ext}"
+      "artifactName": "${productName}_v${version}_${target}.${ext}"
     },
     "nsis": {
+      "artifactName": "${productName}_v${version}_Setup.${ext}",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Dark Project Studio"
+    },
+    "portable": {
+      "artifactName": "${productName}_v${version}_Portable.${ext}"
     },
     "mac": {
       "target": [
