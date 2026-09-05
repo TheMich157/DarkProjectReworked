@@ -2,7 +2,7 @@
   "name": "dark-project-studio",
   "productName": "Dark Project Studio",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "electron/main.cjs",
   "type": "module",
   "scripts": {
@@ -55,11 +55,10 @@
         "nsis",
         "portable"
       ],
-      "icon": "public/icon.png",
-      "artifactName": "${productName}_v${version}_${target}.${ext}"
+      "icon": "public/icon.png"
     },
     "nsis": {
-      "artifactName": "${productName}_v${version}_Setup.${ext}",
+      "artifactName": "Dark_Project_Studio_v${version}_Setup.${ext}",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
@@ -67,7 +66,7 @@
       "shortcutName": "Dark Project Studio"
     },
     "portable": {
-      "artifactName": "${productName}_v${version}_Portable.${ext}"
+      "artifactName": "Dark_Project_Studio_v${version}_Portable.${ext}"
     },
     "mac": {
       "target": [

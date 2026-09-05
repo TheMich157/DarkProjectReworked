@@ -42,10 +42,24 @@ jobs:
       - name: Run Protocol Driver Test Suite
         run: npx tsx test/protocol.test.ts
 
-      - name: Package & Publish Standalone Windows Executables to GitHub Releases
+      - name: Package Standalone Windows Executables
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx electron-builder --win nsis portable --x64 --publish always
+
+      - name: Publish Executables to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            release/*.exe
+            release/*.blockmap
+            release/latest.yml
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Windows Executable Artifacts
         uses: actions/upload-artifact@v4
