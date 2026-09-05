@@ -317,23 +317,47 @@ export class HIDManager {
 
   public async sendPackets(packets: Uint8Array[]): Promise<void> {
     if (this.isSimulated) {
-      // In simulation mode, packets are acknowledged instantly
+      // In simulation mode, packets are acknowledged in local visualizer state
       return;
     }
 
     if (!this.rawDevice || !this.rawDevice.opened) {
-      console.warn('Cannot send packet: No active HID device connected');
+      console.warn('Cannot send HID packets: No active physical HID device opened');
       return;
     }
 
     for (const pkt of packets) {
+      const reportId = pkt[0];
+      const dataWithoutId = new Uint8Array(pkt.buffer.slice(pkt.byteOffset + 1, pkt.byteOffset + pkt.byteLength));
+      let success = false;
+
+      // Attempt 1: Output Report with explicit report ID
       try {
-        const reportId = pkt[0];
-        // Create an explicit ArrayBuffer copy for BufferSource type compliance
-        const data = new Uint8Array(pkt.buffer.slice(pkt.byteOffset + 1, pkt.byteOffset + pkt.byteLength));
-        await this.rawDevice.sendReport(reportId, data as any);
-      } catch (err) {
-        console.error('Failed to send HID report:', err);
+        await this.rawDevice.sendReport(reportId, dataWithoutId as any);
+        success = true;
+      } catch (err1) {
+        // Attempt 2: Feature Report with explicit report ID (common for USB MCU configuration endpoints)
+        try {
+          await this.rawDevice.sendFeatureReport(reportId, dataWithoutId as any);
+          success = true;
+        } catch (err2) {
+          // Attempt 3: Send full 64-byte payload with report ID 0
+          try {
+            await this.rawDevice.sendReport(0, pkt as any);
+            success = true;
+          } catch (err3) {
+            try {
+              await this.rawDevice.sendFeatureReport(0, pkt as any);
+              success = true;
+            } catch (err4) {
+              console.error('All WebHID packet transmission attempts failed:', { err1, err2, err3, err4 });
+            }
+          }
+        }
+      }
+
+      if (success) {
+        console.log(`[DarkProjectHID] Packet (ReportID: 0x${reportId.toString(16)}) sent successfully to ${this.currentDevice?.displayName}`);
       }
     }
   }
