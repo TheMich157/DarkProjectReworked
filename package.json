@@ -1,6 +1,8 @@
 {
   "name": "dark-project-studio",
   "productName": "Dark Project Studio",
+  "description": "Dark Project Peripheral Hardware Studio",
+  "author": "Dark Project",
   "private": true,
   "version": "2.1.0",
   "main": "electron/main.cjs",
@@ -69,7 +71,6 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Dark Project Studio",
-      "publisherName": "Dark Project Studio",
       "differentialPackage": true,
       "warningsAsErrors": false
     },
