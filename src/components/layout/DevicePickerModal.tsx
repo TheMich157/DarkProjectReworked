@@ -52,11 +52,35 @@ export const DevicePickerModal: React.FC<DevicePickerModalProps> = ({
 
   if (!isOpen) return null;
 
-  const connectedIds = new Set(connectedDevices.map(d => d.id));
-  const isCurrentDeviceConnected = !hidManager.isSimulated && hidManager.currentDevice !== null;
+  // Flexible helper to check if a model is physically connected
+  const checkIsConnected = (dev: DeviceDefinition): boolean => {
+    if (!hidManager.isSimulated && hidManager.currentDevice?.id === dev.id) return true;
+    return connectedDevices.some(c => {
+      if (c.id === dev.id) return true;
+      if (c.devicename && dev.devicename && c.devicename.toLowerCase() === dev.devicename.toLowerCase()) return true;
+      if (c.StateList && dev.StateList) {
+        return dev.StateList.some(s1 => 
+          c.StateList.some(s2 => s1.vid.toUpperCase() === s2.vid.toUpperCase() && s1.pid.toUpperCase() === s2.pid.toUpperCase())
+        );
+      }
+      return false;
+    });
+  };
 
-  const filtered = DARKPROJECT_DEVICES.filter(dev => {
-    const isConnected = connectedIds.has(dev.id) || (isCurrentDeviceConnected && dev.id === hidManager.currentDevice?.id);
+  // Prepend any custom connected devices not present in static DARKPROJECT_DEVICES catalog
+  const customConnected = connectedDevices.filter(c => 
+    !DARKPROJECT_DEVICES.some(d => 
+      d.id === c.id || 
+      (d.devicename && c.devicename && d.devicename.toLowerCase() === c.devicename.toLowerCase()) ||
+      (d.StateList && c.StateList && d.StateList.some(s1 => c.StateList.some(s2 => s1.vid.toUpperCase() === s2.vid.toUpperCase() && s1.pid.toUpperCase() === s2.pid.toUpperCase())))
+    )
+  );
+
+  const allDisplayDevices = [...customConnected, ...DARKPROJECT_DEVICES];
+  const connectedCount = allDisplayDevices.filter(d => checkIsConnected(d)).length;
+
+  const filtered = allDisplayDevices.filter(dev => {
+    const isConnected = checkIsConnected(dev);
     const matchesConnected = !showConnectedOnly || isConnected;
     const matchesCategory = filterCategory === 'all' || dev.category === filterCategory;
     const matchesSearch = 
@@ -166,7 +190,7 @@ export const DevicePickerModal: React.FC<DevicePickerModalProps> = ({
               background: showConnectedOnly ? '#10b981' : '#1e2638',
               color: showConnectedOnly ? '#05070a' : '#94a3b8'
             }}>
-              {connectedDevices.length}
+              {connectedCount}
             </span>
           </button>
 
@@ -311,7 +335,7 @@ export const DevicePickerModal: React.FC<DevicePickerModalProps> = ({
           ) : (
             filtered.map(dev => {
               const isSelected = dev.id === activeDeviceId;
-              const isConnected = connectedIds.has(dev.id) || (isCurrentDeviceConnected && dev.id === hidManager.currentDevice?.id);
+              const isConnected = checkIsConnected(dev);
 
               return (
                 <div

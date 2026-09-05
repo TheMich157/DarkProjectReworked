@@ -9,6 +9,23 @@ import { DarkProjectMouseDriver } from './drivers/mouseDriver';
 
 export type HIDEventCallback = (event: string, payload?: any) => void;
 
+export function detectCategory(rawDev: any, productName?: string): 'keyboard' | 'mouse' | 'dongle' {
+  const name = (productName || rawDev?.productName || '').toLowerCase();
+  if (name.includes('mouse') || name.includes('me4') || name.includes('me3') || name.includes('me2') || name.includes('one pro') || name.includes('pointer')) {
+    return 'mouse';
+  }
+  if (name.includes('dongle') || name.includes('receiver')) {
+    return 'dongle';
+  }
+  if (rawDev?.collections) {
+    for (const c of rawDev.collections) {
+      if (c.usagePage === 1 && c.usage === 2) return 'mouse';
+      if (c.usagePage === 1 && c.usage === 6) return 'keyboard';
+    }
+  }
+  return 'keyboard';
+}
+
 export class HIDManager {
   private static instance: HIDManager;
   
@@ -59,8 +76,29 @@ export class HIDManager {
       try {
         const paired = await navigator.hid.getDevices();
         for (const dev of paired) {
-          const match = findDeviceByVidPid(dev.vendorId, dev.productId, dev.productName);
-          if (match && !connected.some(c => c.id === match.id)) {
+          const category = detectCategory(dev, dev.productName);
+          const match = findDeviceByVidPid(dev.vendorId, dev.productId, dev.productName) || {
+            id: `custom-${dev.vendorId}-${dev.productId}`,
+            devicename: dev.productName || 'Dark Project Peripheral',
+            displayName: dev.productName || 'Dark Project Peripheral',
+            category: category,
+            routerID: category === 'mouse' ? 'DarkProjectMouseSeries' : 'CommonKeyboardSeries',
+            StateList: [{ vid: `0x${dev.vendorId.toString(16)}`, pid: `0x${dev.productId.toString(16)}`, StateType: 'USB' }],
+            img: category === 'mouse' ? 'ME4_Wireless' : 'DPKB_FUJI_87_ANSI',
+            battery: false,
+            layoutType: category === 'mouse' ? 'Mouse-6B' : '87-ANSI',
+            deviceInfo: { HardwareProfileNum: 3 }
+          };
+
+          // Check if already in connected list (deduplicate multiple HID interfaces of same USB device)
+          const isAlreadyAdded = connected.some(c => 
+            c.id === match.id || 
+            (c.StateList?.some(s1 => 
+              match.StateList?.some(s2 => s1.vid.toUpperCase() === s2.vid.toUpperCase() && s1.pid.toUpperCase() === s2.pid.toUpperCase())
+            ))
+          );
+
+          if (!isAlreadyAdded) {
             connected.push(match);
           }
         }
@@ -68,8 +106,11 @@ export class HIDManager {
         console.warn('Error fetching connected devices:', err);
       }
     }
-    if (this.currentDevice && !this.isSimulated && !connected.some(c => c.id === this.currentDevice?.id)) {
-      connected.push(this.currentDevice);
+    if (this.currentDevice && !this.isSimulated) {
+      const exists = connected.some(c => c.id === this.currentDevice?.id);
+      if (!exists) {
+        connected.push(this.currentDevice);
+      }
     }
     return connected;
   }
@@ -116,16 +157,17 @@ export class HIDManager {
       const devices = await navigator.hid.requestDevice({ filters });
       if (devices && devices.length > 0) {
         const dev = devices[0];
+        const category = detectCategory(dev, dev.productName);
         const match = findDeviceByVidPid(dev.vendorId, dev.productId, dev.productName) || {
           id: `custom-${dev.vendorId}-${dev.productId}`,
           devicename: dev.productName || 'Dark Project Device',
           displayName: dev.productName || 'Dark Project Device',
-          category: 'keyboard',
-          routerID: 'CommonKeyboardSeries',
+          category: category,
+          routerID: category === 'mouse' ? 'DarkProjectMouseSeries' : 'CommonKeyboardSeries',
           StateList: [{ vid: `0x${dev.vendorId.toString(16)}`, pid: `0x${dev.productId.toString(16)}`, StateType: 'USB' }],
-          img: 'DPKB_FUJI_87_ANSI',
+          img: category === 'mouse' ? 'ME4_Wireless' : 'DPKB_FUJI_87_ANSI',
           battery: false,
-          layoutType: '87-ANSI',
+          layoutType: category === 'mouse' ? 'Mouse-6B' : '87-ANSI',
           deviceInfo: { FnNums: 1, HardwareProfileNum: 3 }
         };
 
