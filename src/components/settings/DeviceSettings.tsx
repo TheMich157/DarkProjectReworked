@@ -135,6 +135,19 @@ export const DeviceSettings: React.FC<DeviceSettingsProps> = ({
           </button>
 
           <button
+            className="btn btn-secondary"
+            onClick={() => {
+              if ((window as any).darkProjectBridge?.checkForUpdates) {
+                (window as any).darkProjectBridge.checkForUpdates();
+              }
+            }}
+            style={{ padding: '10px 18px', border: '1px solid var(--accent-cyan)' }}
+          >
+            <RefreshCw size={16} color="var(--accent-cyan)" />
+            <span>Check for Application Updates</span>
+          </button>
+
+          <button
             className="btn btn-danger"
             onClick={handleReset}
             style={{ padding: '10px 18px' }}

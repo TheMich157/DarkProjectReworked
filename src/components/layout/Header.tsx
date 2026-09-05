@@ -74,7 +74,7 @@ export const Header: React.FC<HeaderProps> = ({
               DARK PROJECT <span style={{ color: '#00f0ff', fontSize: '11px', fontWeight: 600 }}>STUDIO</span>
             </div>
             <div style={{ fontSize: '10px', color: '#64748b', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
-              v2.0.3 • HARDWARE CONTROLLER
+              v2.0.4 • HARDWARE CONTROLLER
             </div>
           </div>
         </div>

@@ -16,6 +16,7 @@ import { TFTStudio } from './components/screen/TFTStudio';
 import { MacroStudio } from './components/macros/MacroStudio';
 import { DeviceSettings } from './components/settings/DeviceSettings';
 import { KeyCapDefinition } from './core/layouts/keyboardLayouts';
+import { Sparkles } from 'lucide-react';
 
 const hidManager = HIDManager.getInstance();
 const macroEngine = new MacroEngine();
@@ -79,6 +80,14 @@ export const App: React.FC = () => {
     setTimeout(() => setStatusMessage(null), 3500);
   }, []);
 
+  // Auto-Updater State
+  const [updaterInfo, setUpdaterInfo] = useState<{
+    status: 'checking' | 'available' | 'downloading' | 'downloaded' | 'up-to-date' | 'error' | null;
+    version?: string;
+    percent?: number;
+    message?: string;
+  }>({ status: null });
+
   // Initialize HID connection and auto-detect
   useEffect(() => {
     hidManager.switchSimulatedDevice(currentDevice);
@@ -103,6 +112,23 @@ export const App: React.FC = () => {
     });
 
     hidManager.autoConnectPairedDevices();
+
+    // Setup Electron Auto-Updater listener
+    const bridge = (window as any).darkProjectBridge;
+    if (bridge?.onUpdaterStatus) {
+      const cleanupUpdater = bridge.onUpdaterStatus((info: any) => {
+        setUpdaterInfo(info);
+        if (info.status === 'downloaded') {
+          showToast(`✨ Dark Project Studio v${info.version || ''} update is ready to install!`);
+        } else if (info.status === 'available') {
+          showToast(`New update v${info.version || ''} found! Downloading in background...`);
+        }
+      });
+      return () => {
+        unsubscribe();
+        cleanupUpdater();
+      };
+    }
 
     return () => {
       unsubscribe();
@@ -289,6 +315,42 @@ export const App: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      {/* Auto-Updater Ready Notification Banner */}
+      {updaterInfo.status === 'downloaded' && (
+        <div style={{
+          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+          padding: '10px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          color: '#ffffff',
+          fontWeight: 700,
+          fontSize: '13px',
+          boxShadow: '0 4px 20px rgba(16, 185, 129, 0.4)',
+          zIndex: 3000
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Sparkles size={16} />
+            <span>Dark Project Studio v{updaterInfo.version || ''} update is downloaded and ready to install!</span>
+          </div>
+          <button
+            onClick={() => (window as any).darkProjectBridge?.restartAndInstall()}
+            style={{
+              padding: '6px 16px',
+              background: '#ffffff',
+              color: '#047857',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              fontSize: '12px'
+            }}
+          >
+            Restart & Update Now
+          </button>
+        </div>
+      )}
+
       {/* App Header */}
       <Header
         currentDevice={currentDevice}
