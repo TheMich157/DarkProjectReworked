@@ -2,7 +2,7 @@
   "name": "dark-project-studio",
   "productName": "Dark Project Studio",
   "private": true,
-  "version": "2.0.4",
+  "version": "2.1.0",
   "main": "electron/main.cjs",
   "type": "module",
   "scripts": {

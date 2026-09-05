@@ -1,12 +1,12 @@
 import React from 'react';
 import { DeviceDefinition, ConnectionState, ConnectionType } from '../../core/protocol/types';
-import { 
-  Keyboard, 
-  Mouse, 
-  Battery, 
-  BatteryCharging, 
-  Usb, 
-  Wifi, 
+import {
+  Keyboard,
+  Mouse,
+  Battery,
+  BatteryCharging,
+  Usb,
+  Wifi,
   Bluetooth,
   ChevronDown,
   Sliders,
@@ -74,7 +74,7 @@ export const Header: React.FC<HeaderProps> = ({
               DARK PROJECT <span style={{ color: '#00f0ff', fontSize: '11px', fontWeight: 600 }}>STUDIO</span>
             </div>
             <div style={{ fontSize: '10px', color: '#64748b', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
-              v2.0.4 • HARDWARE CONTROLLER
+              v2.1.0 • HARDWARE CONTROLLER
             </div>
           </div>
         </div>
@@ -82,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div style={{ width: '1px', height: '24px', background: '#1e2638' }} />
 
         {/* Selected Device Menu Button */}
-        <button 
+        <button
           onClick={onOpenDevicePicker}
           style={{
             display: 'flex',
