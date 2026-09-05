@@ -59,7 +59,7 @@
       "publisherName": "Dark Project Studio",
       "legalTrademarks": "Dark Project Studio",
       "verifyUpdateCodeSignature": false,
-      "requestedExecutionLevel": "user"
+      "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
       "artifactName": "Dark_Project_Studio_v${version}_Setup.${ext}",
@@ -70,13 +70,11 @@
       "createStartMenuShortcut": true,
       "shortcutName": "Dark Project Studio",
       "publisherName": "Dark Project Studio",
-      "requestedExecutionLevel": "user",
       "differentialPackage": true,
       "warningsAsErrors": false
     },
     "portable": {
-      "artifactName": "Dark_Project_Studio_v${version}_Portable.${ext}",
-      "requestExecutionLevel": "user"
+      "artifactName": "Dark_Project_Studio_v${version}_Portable.${ext}"
     },
     "mac": {
       "target": [
