@@ -172,7 +172,7 @@ export const App: React.FC = () => {
   const handleToggleSimulator = () => {
     hidManager.switchSimulatedDevice(currentDevice);
     setConnectionType('Simulated');
-    showToast('Switched to Hardware Simulator');
+    showToast('No device connected - Model preview mode active');
   };
 
   // Profile switches

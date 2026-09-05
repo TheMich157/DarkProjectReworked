@@ -176,23 +176,23 @@ export const Header: React.FC<HeaderProps> = ({
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          padding: '5px 10px',
-          background: '#121722',
-          border: '1px solid #1e2638',
-          borderRadius: '4px',
+          padding: '5px 12px',
+          background: isSimulated ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)',
+          border: isSimulated ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)',
+          borderRadius: '6px',
           fontSize: '11px',
           fontFamily: 'var(--font-mono)',
-          fontWeight: 600
+          fontWeight: 700
         }}>
           <div style={{
             width: '8px',
             height: '8px',
             borderRadius: '50%',
-            background: isSimulated ? '#a855f7' : '#10b981',
-            boxShadow: `0 0 8px ${isSimulated ? '#a855f7' : '#10b981'}`
+            background: isSimulated ? '#f59e0b' : '#10b981',
+            boxShadow: `0 0 8px ${isSimulated ? '#f59e0b' : '#10b981'}`
           }} />
-          <span style={{ color: '#e2e8f0' }}>
-            {isSimulated ? 'SIMULATOR' : connectionType.toUpperCase()}
+          <span style={{ color: isSimulated ? '#fcd34d' : '#6ee7b7', letterSpacing: '0.3px' }}>
+            {isSimulated ? 'NO DEVICE CONNECTED' : `${connectionType.toUpperCase()} CONNECTED`}
           </span>
         </div>
 

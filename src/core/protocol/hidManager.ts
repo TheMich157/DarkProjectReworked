@@ -53,6 +53,27 @@ export class HIDManager {
     return typeof window !== 'undefined' && 'hid' in navigator;
   }
 
+  public async getConnectedDevices(): Promise<DeviceDefinition[]> {
+    const connected: DeviceDefinition[] = [];
+    if (this.isWebHIDSupported()) {
+      try {
+        const paired = await navigator.hid.getDevices();
+        for (const dev of paired) {
+          const match = findDeviceByVidPid(dev.vendorId, dev.productId, dev.productName);
+          if (match && !connected.some(c => c.id === match.id)) {
+            connected.push(match);
+          }
+        }
+      } catch (err) {
+        console.warn('Error fetching connected devices:', err);
+      }
+    }
+    if (this.currentDevice && !this.isSimulated && !connected.some(c => c.id === this.currentDevice?.id)) {
+      connected.push(this.currentDevice);
+    }
+    return connected;
+  }
+
   public async autoConnectPairedDevices(): Promise<boolean> {
     if (!this.isWebHIDSupported()) return false;
 
@@ -293,6 +314,7 @@ export class HIDManager {
     if (match && !this.rawDevice) {
       this.attachDevice(e.device, match);
     }
+    this.notify('connectedListChanged');
   }
 
   private onDeviceDisconnected(e: HIDConnectionEvent) {
@@ -300,5 +322,6 @@ export class HIDManager {
     if (this.rawDevice === e.device) {
       this.disconnect();
     }
+    this.notify('connectedListChanged');
   }
 }
